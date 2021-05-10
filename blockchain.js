@@ -4,7 +4,7 @@
  * Author: Mor Cohen
  * Date: 21/9/18
  */
-const uuid = require('uuid/v1'); //generate unique transaction id.
+const uuid = require('uuid'); //generate unique transaction id.
 const sha256 = require('sha256');
 const currentNodeUrl = process.argv[3];
 

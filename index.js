@@ -1,9 +1,3 @@
-/*
- * Title: Blockchain Project
- * Description: Api for the project
- * Author: Mor Cohen
- * Date: 21/9/18
- */
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -13,7 +7,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser'); 
 const Blockchain = require('./blockchain'); 
-const uuid = require('uuid/v1');//for keys
+const uuid = require('uuid');//for keys
 const uniqid = require('uniqid');//for invitations
 const rp = require('request-promise');
 var path = require('path');
@@ -86,9 +80,11 @@ app.set('view engine', 'ejs');
 
 const port = process.env.PORT || process.argv[2];
 
-app.use(express.static(path.join(__dirname, 'Front'))); //public
-app.use("/styles", express.static(__dirname + '/Front/assets'));//allow css in invitation page (public)
-
+app.use(express.static(path.join(__dirname, 'FrontEnd'))); //public
+app.use("/css", express.static(__dirname + '/FrontEnd/Wed/css'));
+app.use("/js", express.static(__dirname + '/FrontEnd/Wed/js'));
+app.use("/images", express.static(__dirname + '/FrontEnd/Wed/images'));
+app.use("/webfonts", express.static(__dirname + '/FrontEnd/Wed/webfonts'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -612,7 +608,7 @@ app.get('/address/:address', (req, res) => {
     });
 });
 
-app.get('/Front', (req, res) => {
-    res.sendFile('./Front/index.html', { root: __dirname });
+app.get('/FrontEnd', (req, res) => {
+    res.sendFile('./FrontEnd/web/index.html', { root: __dirname });
 });
     
