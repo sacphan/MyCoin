@@ -1,26 +1,23 @@
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-/*  -Dependencies & Configurations-  */
-///////////////////////////////////////////////////////////////////////////////////////////////
-const express = require('express');
-const app = express();
-const bodyParser = require('body-parser'); 
-const Blockchain = require('./blockchain'); 
-const uuid = require('uuid');//for keys
-const uniqid = require('uniqid');//for invitations
-const rp = require('request-promise');
+var createError = require('http-errors');
+var express = require('express');
 var path = require('path');
-var validator = require('validator');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
+const Blockchain = require('./blockchain'); 
+const uuid = require('uuid/v1');//for keys
+const uniqid = require('uniqid');//for invitations
+var path = require('path');
 const sha256 = require('sha256');
 const fs = require('fs');
 const MongoClient = require('mongodb').MongoClient;
 const http = require('http');
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
+
 var server = http.createServer(app);
 var nodemailer = require('nodemailer');
 var forge = require('node-forge');
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";//fixing nodemailer
-
+var app = express();
 ///////////////////////////////////////////////////////////////////////////////////////////////
 /*  -Initialize blockchain first time & create a master user-  */
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,6 +39,10 @@ fs.appendFileSync('masterKeysForDelete.txt', '\npublicKey: ' + public_key);
 ///////////////////////////////////////////////////////////////////////////////////////////////
 /*  -Create a database named "invitationsDB" on first time-  */
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
 var url = "mongodb://localhost:27017/invitationsDB";
 MongoClient.connect(url, function (err, db) {
     if (err) throw err;
@@ -74,36 +75,44 @@ MongoClient.connect(url, function (err, db) {
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
-/*  -Configurations & server-  */
-///////////////////////////////////////////////////////////////////////////////////////////////
-app.set('view engine', 'ejs');
-
-const port = process.env.PORT || process.argv[2];
-
-app.use(express.static(path.join(__dirname, 'FrontEnd'))); //public
-app.use("/css", express.static(__dirname + '/FrontEnd/Wed/css'));
-app.use("/js", express.static(__dirname + '/FrontEnd/Wed/js'));
-app.use("/images", express.static(__dirname + '/FrontEnd/Wed/images'));
-app.use("/webfonts", express.static(__dirname + '/FrontEnd/Wed/webfonts'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-
-var server = app.listen(port, function () {
-    console.log('listening to port: ' + port);
-});
-
-///////////////////////////////////////////////////////////////////////////////////////////////
 /*  -find index of socket | For example : search((socket.id).toString(), nodes);-  */
 ///////////////////////////////////////////////////////////////////////////////////////////////
 function search(nameKey, myArray) {
-    for (var i = 0; i < myArray.length; i++) {
-        if (myArray[i].socketId === nameKey) {
-            return i;
-        }
-    }
+  for (var i = 0; i < myArray.length; i++) {
+      if (myArray[i].socketId === nameKey) {
+          return i;
+      }
+  }
 }
 ////////////////////////////////////////// ~@ -Start socket.io- @~ //////////////////////////////////////////
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'hbs');
 
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  next(createError(404));
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
 
 const nodes = [];
 var io = require('socket.io')(server);
@@ -138,7 +147,7 @@ io.on('connection', (socket) => {
                 });
             }
             /*  -Authentication: check if user have the require amount of coins for current transaction && if user exist in the blockchain-  */
-            const addressData = backup.getAddressData(req.body.sender);
+            const addressData = backup. AddressData(req.body.sender);
             const addressData1 = backup.getAddressData(req.body.recipient);
             if (addressData.addressBalance < amount || addressData === false || addressData1 === false) {
                 flag = false;
@@ -608,7 +617,9 @@ app.get('/address/:address', (req, res) => {
     });
 });
 
-app.get('/FrontEnd', (req, res) => {
-    res.sendFile('./FrontEnd/web/index.html', { root: __dirname });
+app.get('/Front', (req, res) => {
+    console.log("Tesst");
+    res.sendFile('./Front/index.html', { root: __dirname });
 });
-    
+
+module.exports = app;
