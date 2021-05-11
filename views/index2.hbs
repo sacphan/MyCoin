@@ -94,12 +94,10 @@
         <div class="container">
             <div class="row">
             <div class="col-lg-12">
-   <form>
-    <label for="exampleInputEmail1">Ví của tôi</label>
-    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Xem thông tin cập nhập về ví của bạn.">
-    <small id="emailHelp" class="form-text text-muted">Xem thông tin cập nhập về ví của bạn.</small>
-</form>
-            </div>
+    <label for="publickey">Ví của tôi</label>
+    <input type="text" class="form-control" id="publickey" aria-describedby="publickey" placeholder="Nhập địa chỉ của ví.">
+    <small id="publickey" class="form-text text-muted">Xem thông tin cập nhập về ví của bạn.</small>
+          </div>
             
             </div> <!-- end of row -->
         </div> <!-- end of container -->
@@ -111,8 +109,8 @@
     <div class="basic-1">
         <div class="container">
             <div class="row">
-                <div class="col-lg-12">
-                    <p>Team management mobile apps don’t get better than Pavo. It’s probably the best app in the world for this purpose. Don’t hesitate to give it a try today and you will fall in love with it</p>
+                <div class="col-lg-12" id="ContentWallet">
+                 
                 </div> <!-- end of col -->
             </div> <!-- end of row -->
         </div> <!-- end of container -->
@@ -670,3 +668,53 @@
     <script src="js/scripts.js"></script> <!-- Custom scripts -->
 </body>
 </html>
+<script>
+    $('#publickey').keyup(function(e){
+    if(e.keyCode == 13)
+    {
+         $.ajax({
+                url: '/address/'+$(this).val(),
+                type: 'GET',
+               
+            }).done(function(result) {
+                console.log(result)
+                var TransactionHTML = '';
+                result.addressData.addressTransactions.map((item,index) =>{
+                    TransactionHTML+=`
+                       <tr>
+      <th scope="row">${(index+1)}</th>
+      <td>${item.sender}</td>
+      <td>${item.recipient}</td>
+      <td>${item.amount}</td>
+    </tr>
+                    `
+                });
+                $("#ContentWallet").html(`<div class="card">
+  <div class="card-header">
+    Thông tin ví
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">Địa chỉ</h5>
+    <p class="card-text">${$('#publickey').val()}</p>
+    <h5 class="card-title">Số dư: </h5><p>${result.addressData.addressBalance}</p>
+    <h5 class="card-title">Lịch sử giao dịch</h5>
+    <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Sender</th>
+      <th scope="col">Recipient</th>
+      <th scope="col">Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+      ${TransactionHTML}
+   
+  </tbody>
+</table>
+  </div>
+</div>`);
+            });
+    }
+});
+</script>
