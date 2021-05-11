@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express.Router();
 const Blockchain = require('../blockchain'); 
-
+const rp = require('request-promise');
 const http = require('http');
 const uuid = require('uuid/v1');//for keys
 const uniqid = require('uniqid');//for invitations
@@ -84,15 +84,15 @@ function search(nameKey, myArray) {
 
 const nodes = [];
 var io = require('socket.io')(server);
-
+nodes.push(new Blockchain(1))
 /*  -Socket.io-  */
-io.on('connection', (socket) => {
+// io.on('connection', (socket) => {
 
     /*  -On connection of socket-  */
-    nodes.push(new Blockchain(socket.id));
-    socket.emit('PT', backup.pendingTransactions);//emit to that specific socket
-    console.log('New user connected');
-    console.log(socket.id);
+    // nodes.push(new Blockchain(socket.id));
+    // socket.emit('PT', backup.pendingTransactions);//emit to that specific socket
+    // console.log('New user connected');
+    // console.log(socket.id);
 
 
     /*
@@ -100,7 +100,7 @@ io.on('connection', (socket) => {
     * Description: Init transaction for every endpoint.
     */
     app.post('/transaction/broadcast', (req, res) => {
-
+      
         const amount = parseFloat(req.body.amount);
         const newTransaction = nodes[nodes.length-1].createNewTransaction(amount, req.body.sender, req.body.recipient);
         let flag = true;
@@ -115,7 +115,7 @@ io.on('connection', (socket) => {
                 });
             }
             /*  -Authentication: check if user have the require amount of coins for current transaction && if user exist in the blockchain-  */
-            const addressData = backup. AddressData(req.body.sender);
+            const addressData = backup.getAddressData(req.body.sender);
             const addressData1 = backup.getAddressData(req.body.recipient);
             if (addressData.addressBalance < amount || addressData === false || addressData1 === false) {
                 flag = false;
@@ -137,12 +137,12 @@ io.on('connection', (socket) => {
             backup.addTransactionToPendingTransactions(newTransaction);//put new transaction in global object
             nodes.forEach(socketNode => {
                 socketNode.addTransactionToPendingTransactions(newTransaction);
-                io.clients().sockets[(socketNode.socketId).toString()].pendingTransactions = socketNode.pendingTransactions;//add property to socket
-                pt = socketNode.pendingTransactions;
+                // io.clients().sockets[(socketNode.socketId).toString()].pendingTransactions = socketNode.pendingTransactions;//add property to socket
+                // pt = socketNode.pendingTransactions;
             });
-            io.clients().emit('PT', pt);//emit to all sockets
+            // io.clients().emit('PT', pt);//emit to all sockets
             res.json({
-                note: `Transaction complete!`
+                note: true
             });
         }
     });
@@ -166,7 +166,7 @@ io.on('connection', (socket) => {
         const newBlock = backup.createNewBlock(nonce, previousBlockHash, blockHash);//create a new block with params
         
         const requestOptions = {//a promise to make a new block
-            uri: backup.currentNodeUrl + '/receive-new-block',
+            uri: 'http://localhost:3000' + '/receive-new-block',
             method: 'POST',
             body: { newBlock: newBlock },
             json: true
@@ -174,7 +174,7 @@ io.on('connection', (socket) => {
         rp(requestOptions)
             .then(data => {//reward the miner after mining succed and new block already created
                 const requestOptions = {
-                    uri: backup.currentNodeUrl + '/transaction/broadcast',
+                    uri: 'http://localhost:3000' + '/transaction/broadcast',
                     method: 'POST',
                     body: {
                         amount: 12.5,
@@ -225,9 +225,9 @@ io.on('connection', (socket) => {
     * Title: emitMiningSuccess
     * Description: emit all sockets - a message to all sockets for mining operation succed
     */
-    app.get('/emitMiningSuccess', (req, res) => {
-        io.clients().emit('mineSuccess', true);//emit to all sockets
-    });
+    // app.get('/emitMiningSuccess', (req, res) => {
+    //     io.clients().emit('mineSuccess', true);//emit to all sockets
+    // });
 
 
     /*
@@ -412,22 +412,22 @@ io.on('connection', (socket) => {
     * Title: Chat - get new message
     * Description: get a message and emit it to all users
     */
-    socket.on('getNewMessage', (message) => {
-        //message = message.toString();
-        //message = message.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        io.clients().emit('newMessage', message);
-    });
+    // socket.on('getNewMessage', (message) => {
+    //     //message = message.toString();
+    //     //message = message.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    //     io.clients().emit('newMessage', message);
+    // });
 
     /*
     * Title: disconnect
     * Description: enabled when user logs off
     */
-    socket.on('disconnect', () => {
-        console.log(`User: ${socket.id} was disconnected`)
-        nodes.splice(search((socket.id).toString(), nodes), 1);
-    });
+    // socket.on('disconnect', () => {
+    //     console.log(`User: ${socket.id} was disconnected`)
+    //     nodes.splice(search((socket.id).toString(), nodes), 1);
+    // });
 
-});
+// });
 
 
 /////////////////////////////////////////// ~@ -End socket.io- @~ ///////////////////////////////////////////
@@ -586,9 +586,9 @@ app.get('/address/:address', (req, res) => {
     });
 });
 
-app.get('/Front', (req, res) => {
-    console.log("Tesst");
-    res.sendFile('./Front/index.html', { root: __dirname });
+app.get('/', function(req, res,next) {  
+    res.sendFile(__dirname + 'views/index2.hbs');
 });
+
 
 module.exports = app;

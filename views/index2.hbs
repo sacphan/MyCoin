@@ -29,7 +29,7 @@
 	<link href="css/styles.css" rel="stylesheet">
 	
 	<!-- Favicon  -->
-    <link rel="icon" href="./images/favicon.png">
+    <link rel="icon" href="images/favicon.png">
 </head>
 <body data-spy="scroll" data-target=".fixed-top">
     
@@ -56,7 +56,7 @@
                         <a class="nav-link page-scroll" href="#features">Transaction</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link page-scroll" href="#details">Details</a>
+                        <a class="nav-link page-scroll" href="#details">Miner</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link page-scroll" href="#pricing">Pricing</a>
@@ -122,81 +122,28 @@
     <div id="features" class="cards-1">
         <div class="container">
             <div class="row">
-                <div class="col-lg-12">
-                    
-                    <!-- Card -->
-                    <div class="card">
-                        <div class="card-image">
-                            <img class="img-fluid" src="images/features-icon-1.svg" alt="alternative">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Platform Integration</h5>
-                            <p>You sales force can use the app on any smartphone platform without compatibility issues</p>
-                        </div>
-                    </div>
-                    <!-- end of card -->
+  <div class="form-group col-lg-6">
+    <label for="exampleInputprivatekey">Private Key</label>
+    <input type="text" class="form-control" id="privatekey" aria-describedby="privatekey" placeholder="Nhập khóa bí mật của bạn">
+  </div>
+  <div class="form-group col-lg-6">
+    <label for="exampleInputCoin">Số coin gửi</label>
+    <input type="number" class="form-control" id="coin" aria-describedby="coin" placeholder="Nhập số coin">
+  </div>
+      </div> <!-- end of col -->
+      <div class="row">
+  <div class="form-group col-lg-6">
+    <label for="exampleInputpublickey">Public Key</label>
+    <input type="text" class="form-control" id="publickeyTransaction" aria-describedby="publickey" placeholder="Nhập khóa công khai của bạn">
+  </div>
+  <div class="form-group col-lg-6">
+    <label for="exampleInputPassword1">Public Key người nhận</label>
+    <input type="text" class="form-control" id="publicKeyRecipient" placeholder="Khoa công khai của người nhận">
+  </div>
 
-                    <!-- Card -->
-                    <div class="card">
-                        <div class="card-image">
-                            <img class="img-fluid" src="images/features-icon-2.svg" alt="alternative">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Easy On Resources</h5>
-                            <p>Works smoothly even on older generation hardware due to our optimization efforts</p>
-                        </div>
-                    </div>
-                    <!-- end of card -->
-
-                    <!-- Card -->
-                    <div class="card">
-                        <div class="card-image">
-                            <img class="img-fluid" src="images/features-icon-3.svg" alt="alternative">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Great Performance</h5>
-                            <p>Optimized code and innovative technology insure no delays and ultra-fast responsiveness</p>
-                        </div>
-                    </div>
-                    <!-- end of card -->
-
-                    <!-- Card -->
-                    <div class="card">
-                        <div class="card-image">
-                            <img class="img-fluid" src="images/features-icon-4.svg" alt="alternative">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Multiple Languages</h5>
-                            <p>Choose from one of the 40 languages that come pre-installed and start selling smarter</p>
-                        </div>
-                    </div>
-                    <!-- end of card -->
-
-                    <!-- Card -->
-                    <div class="card">
-                        <div class="card-image">
-                            <img class="img-fluid" src="images/features-icon-5.svg" alt="alternative">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Free Updates</h5>
-                            <p>Don't worry about future costs, pay once and receive all future updates at no extra cost</p>
-                        </div>
-                    </div>
-                    <!-- end of card -->
-
-                    <!-- Card -->
-                    <div class="card">
-                        <div class="card-image">
-                            <img class="img-fluid" src="images/features-icon-6.svg" alt="alternative">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Community Support</h5>
-                            <p>Register the app and get acces to knowledge and ideas from the Pavo online community</p>
-                        </div>
-                    </div>
-                    <!-- end of card -->
-
-                </div> <!-- end of col -->
+ 
+</div>
+             <button type="button" id="createTransaction" class="btn btn-primary">Tạo Transaction</button>
             </div> <!-- end of row -->
         </div> <!-- end of container -->
     </div> <!-- end of cards-1 -->
@@ -207,18 +154,23 @@
     <div id="details" class="basic-2">
         <div class="container">
             <div class="row">
-                <div class="col-lg-5">
-                    <div class="text-container">
-                        <h2>Results driven ground breaking technology</h2>
-                        <p>Based on our team's extensive experience in developing line of business applications and constructive customer feedback we reached a new level of revenue.</p>
-                        <p>We enjoy helping small and medium sized tech businesses take a shot at established Fortune 500 companies</p>
-                    </div> <!-- end of text-container -->
-                </div> <!-- end of col -->
-                <div class="col-lg-7">
-                    <div class="image-container">
-                        <img class="img-fluid" src="images/details-1.jpg" alt="alternative">
-                    </div> <!-- end of image-container -->
-                </div> <!-- end of col -->
+              <h2>Các giao dịch gần đây được thực hiện</h2>
+            </div> <!-- end of row -->
+            <div class="row">
+               <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">ID giao dịch</th>
+      <th scope="col">Người gửi</th>
+      <th scope="col">Người nhận</th>
+      <th scope="col">Tổng</th>
+    </tr>
+  </thead>
+  <tbody id="bodyTransaction">
+   
+  </tbody>
+</table>
+<button class="btn btn-primary" id="miner">Miner</button>
             </div> <!-- end of row -->
         </div> <!-- end of container -->
     </div> <!-- end of basic-2 -->
@@ -666,9 +618,15 @@
     <script src="js/swiper.min.js"></script> <!-- Swiper for image and text sliders -->
     <script src="js/jquery.magnific-popup.js"></script> <!-- Magnific Popup for lightboxes -->
     <script src="js/scripts.js"></script> <!-- Custom scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" ></script>
+
+
+
+
 </body>
 </html>
 <script>
+
     $('#publickey').keyup(function(e){
     if(e.keyCode == 13)
     {
@@ -716,5 +674,90 @@
 </div>`);
             });
     }
+});
+$("#createTransaction").click(function(){
+    let privatekey = $("#privatekey").val();
+    let publickey = $("#publickeyTransaction").val();
+    let coin   = $("#coin").val();
+    let publicKeyRecipient = $("#publicKeyRecipient").val();
+         $.ajax({
+                url: '/transaction/broadcast',
+                type: 'POST',
+               dataType:'json',
+               data: 
+               {
+                   sender:publickey,
+                   recipient: publicKeyRecipient,
+                   amount: coin,
+                   privKey:privatekey
+               },
+                success: function(result){  
+                    console.log(result)
+                   if (result.note==false)
+                   {
+                       
+                      alert("Create Transaction failed")
+                   }
+                   else
+                   {
+                       //toastr.success('Transaction success!', 'Transaction')
+                        alert("Create Transaction success")
+                        {{!-- $("#privatekey").val('');
+                        $("#publickeyTransaction").val('');
+                        $("#coin").val('');
+                        $("#publicKeyRecipient").val(''); --}}
+                        
+                         $.ajax({
+                url: '/pendingTransactions',
+                type: 'GET',          
+               }).done(function(result){
+                   let html='';
+                   result.pendingTransactions.map((item)=>{
+                       html+=` <tr>
+      <th scope="row">${item.transactionId}</th>
+      <td>${item.sender}</td>
+      <td>${item.recipient}</td>
+      <td>${item.amount}</td>
+    </tr>`
+                   }) 
+                   $("#bodyTransaction").html(html);
+               });
+                   }
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                 alert("Create Transaction failed")
+                }       
+            })
+
+})
+$("#miner").click(function(){
+  var key1 = prompt("Nhập private key của bạn:", "");
+  var key2 = prompt("Nhập public key của bạn:", "");
+   $.ajax({
+                url: '/hashKeys',
+                type: 'POST',
+               data: 
+               {
+                  "key1": key1,
+                  "key2": key2
+               }
+   }).done(function(response){
+  if (response.note === false) {
+                            alert("Các khóa bạn nhập chưa đúng");
+                        }
+                        else {
+                            
+                                 $.ajax({
+                                    url: '/mine',
+                                    type: 'GET'           
+                                }).done(function(){
+                                    $("#bodyTransaction").html('');
+                                     {{!-- $.get('/emitMiningSuccess', (data, status) => {//http request via JQuery
+                                        console.log(data);
+                                    }); --}}
+                                    alert("Miner success")
+                                });
+                        }
+   });
 });
 </script>
