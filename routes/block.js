@@ -589,6 +589,47 @@ app.get('/address/:address', (req, res) => {
 app.get('/', function(req, res,next) {  
     res.sendFile(__dirname + 'views/index2.hbs');
 });
+const mailer = require('../utils/mailer')
+app.post('/send-email',async function(req,res)
+{
+    try {
+        // Lấy data truyền lên từ form phía client
+      
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+/*  -Initialize blockchain first time & create a master user-  */
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+const privateKey = uuid().split('-').join(''); //privateKey
+const public_key = sha256(privateKey); //publicKey
+console.log(public_key);
+const master = backup.createNewTransaction(1000000, "system-reward", public_key);
+backup.chain[0].transactions.push(master);
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+/*  -Alert: the file 'masterKeysForDelete.txt' content need to be deleted after first init-  */
+fs.appendFileSync('masterKeysForDelete.txt', '\nprivateKey: ' + privateKey);
+fs.appendFileSync('masterKeysForDelete.txt', '\npublicKey: ' + public_key);
+/*  -Alert: the file 'masterKeysForDelete.txt' content need to be deleted after first init-  */
+///////////////////////////////////////////////////////////////////////////////////////////////
+        // Thực hiện gửi email
+        let to = req.body.email;
+        let subject = "Create Wallet";
+        let body=`
+        <div>Private key: ${privateKey} </div> 
+        <div>Public key: ${public_key}</div>`
+        await mailer.sendMail(to, subject, body)
+    
+        // Quá trình gửi email thành công thì gửi về thông báo success cho người dùng
+        res.send('<h3>Create Wallet success full. Check mail please.</h3>')
+      } catch (error) {
+        // Nếu có lỗi thì log ra để kiểm tra và cũng gửi về client
+        console.log(error)
+        res.send(error)
+      }
+}
+)
 
 
 module.exports = app;
